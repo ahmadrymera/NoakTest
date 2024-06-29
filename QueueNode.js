@@ -1,9 +1,8 @@
 const readline = require('readline'); // Import the readline module for reading input from the terminal
 
-// Define the Doctor class with a constructor that takes a name and average consultation time
+// Define the Doctor class with a constructor that takes average consultation time
 class Doctor {
-    constructor(name, avgConsultationTime) {
-        this.name = name;
+    constructor(avgConsultationTime) {
         this.avgConsultationTime = avgConsultationTime;
     }
 }
@@ -45,13 +44,12 @@ async function main() {
     
     let doctors = []; // Initialize an empty array to store doctor objects
     
-    // Loop to get the name and average consultation time for each doctor
+    // Loop to get the average consultation time for each doctor
     for (let i = 0; i < numberOfDoctors; i++) {
-        const doctorName = await askQuestion(`Enter the name of doctor ${i + 1}: `);
-        const avgConsultationTime = parseFloat(await askQuestion(`Enter the average consultation time for Dr. ${doctorName} (in minutes): `));
-        doctors.push(new Doctor(doctorName, avgConsultationTime)); // Create a new doctor object and add it to the array
+        const avgConsultationTime = parseFloat(await askQuestion(`Enter the average consultation time for Doctor ${i + 1} (in minutes): `));
+        doctors.push(new Doctor(avgConsultationTime)); // Create a new doctor object and add it to the array
     }
-    
+
     // Ask the user for their position in the queue
     const patientPosition = parseInt(await askQuestion("Enter your position in the queue: "));
     

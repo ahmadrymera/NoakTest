@@ -3,10 +3,9 @@
 <head>
     <title>Clinic Queue System</title>
     <script>
-        // Define the Doctor class with a constructor that takes a name and average consultation time
+        // Define the Doctor class with a constructor that takes average consultation time
         class Doctor {
-            constructor(name, avgConsultationTime) {
-                this.name = name;
+            constructor(avgConsultationTime) {
                 this.avgConsultationTime = avgConsultationTime;
             }
         }
@@ -39,11 +38,10 @@
             
             let doctors = []; // Initialize an empty array to store doctor objects
             
-            // Loop to get the name and average consultation time for each doctor
+            // Loop to get the average consultation time for each doctor
             for (let i = 0; i < numberOfDoctors; i++) {
-                const doctorName = document.getElementById(`doctorName${i}`).value;
                 const avgConsultationTime = parseFloat(document.getElementById(`avgConsultationTime${i}`).value);
-                doctors.push(new Doctor(doctorName, avgConsultationTime)); // Create a new doctor object and add it to the array
+                doctors.push(new Doctor(avgConsultationTime)); // Create a new doctor object and add it to the array
             }
             
             // Get the patient's position in the queue from the input
@@ -62,18 +60,16 @@
             const doctorsContainer = document.getElementById('doctorsContainer');
             doctorsContainer.innerHTML = ''; // Clear any existing doctor fields
 
-            // Loop to create input fields for each doctor's name and average consultation time
+            // Loop to create input fields for each doctor's average consultation time
             for (let i = 0; i < numberOfDoctors; i++) {
-                const doctorNameInput = document.createElement('input');
-                doctorNameInput.type = 'text';
-                doctorNameInput.id = `doctorName${i}`;
-                doctorNameInput.placeholder = `Enter the name of doctor ${i + 1}`;
-                doctorsContainer.appendChild(doctorNameInput);
+                const doctorLabel = document.createElement('label');
+                doctorLabel.textContent = `Enter average consultation time for Doctor ${i + 1} (in minutes): `;
+                doctorsContainer.appendChild(doctorLabel);
 
                 const avgConsultationTimeInput = document.createElement('input');
                 avgConsultationTimeInput.type = 'number';
                 avgConsultationTimeInput.id = `avgConsultationTime${i}`;
-                avgConsultationTimeInput.placeholder = `Enter the average consultation time for Dr. ${i + 1} (in minutes)`;
+                avgConsultationTimeInput.required = true;
                 doctorsContainer.appendChild(avgConsultationTimeInput);
 
                 doctorsContainer.appendChild(document.createElement('br')); // Add a line break
