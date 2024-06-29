@@ -37,6 +37,13 @@ function askQuestion(query) {
     return new Promise(resolve => rl.question(query, resolve));
 }
 
+// Function to convert total waiting time from minutes to "H hour dan M minute" format
+function convertToHM(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours} hour and ${remainingMinutes} minute`;
+}
+
 // Main function to run the program
 async function main() {
     // Ask the user for the number of doctors
@@ -54,10 +61,13 @@ async function main() {
     const patientPosition = parseInt(await askQuestion("Enter your position in the queue: "));
     
     // Calculate the waiting time based on the doctors and patient position
-    const waitingTime = calculateWaitingTime(doctors, patientPosition);
+    const waitingTimeInMinutes = calculateWaitingTime(doctors, patientPosition);
     
+    // Convert waiting time to "H hour dan M minute" format
+    const waitingTimeFormatted = convertToHM(waitingTimeInMinutes);
+
     // Output the estimated waiting time
-    console.log(`You have to wait approximately ${waitingTime} minutes.`);
+    console.log(`You have to wait approximately ${waitingTimeFormatted}.`);
     
     rl.close(); // Close the readline interface
 }

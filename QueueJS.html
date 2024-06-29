@@ -26,7 +26,14 @@
                 }
             }
             
-            return totalWaitingTime; // Return the total waiting time
+            return totalWaitingTime; // Return the total waiting time in minutes
+        }
+
+        // Function to convert total waiting time from minutes to "H hour and M minute" format
+        function convertToHM(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            return `${hours} hour and ${remainingMinutes} minute`;
         }
 
         // Function to handle form submission and calculate waiting time
@@ -48,10 +55,13 @@
             const patientPosition = parseInt(document.getElementById('patientPosition').value);
             
             // Calculate the waiting time based on the doctors and patient position
-            const waitingTime = calculateWaitingTime(doctors, patientPosition);
+            const waitingTimeInMinutes = calculateWaitingTime(doctors, patientPosition);
             
+            // Convert waiting time to "H jam dan M menit" format
+            const waitingTimeFormatted = convertToHM(waitingTimeInMinutes);
+
             // Output the estimated waiting time
-            document.getElementById('result').textContent = `You have to wait approximately ${waitingTime} minutes.`;
+            document.getElementById('result').textContent = `You have to wait approximately ${waitingTimeFormatted}.`;
         }
 
         // Function to dynamically generate input fields for doctors based on the number of doctors entered
