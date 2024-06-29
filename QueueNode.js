@@ -1,0 +1,67 @@
+const readline = require('readline'); // Import the readline module for reading input from the terminal
+
+// Define the Doctor class with a constructor that takes a name and average consultation time
+class Doctor {
+    constructor(name, avgConsultationTime) {
+        this.name = name;
+        this.avgConsultationTime = avgConsultationTime;
+    }
+}
+
+// Function to calculate waiting time based on the list of doctors and patient's position in the queue
+function calculateWaitingTime(doctors, patientPosition) {
+    // Sort doctors by their average consultation time in ascending order
+    doctors.sort((a, b) => a.avgConsultationTime - b.avgConsultationTime);
+    
+    let totalWaitingTime = 0; // Initialize total waiting time
+    let patientQueue = 0; // Initialize patient queue position
+    
+    // Allocate patients to doctors in a round-robin manner until the patient's position is reached
+    while (patientQueue < patientPosition) {
+        for (let i = 0; i < doctors.length && patientQueue < patientPosition; i++) {
+            totalWaitingTime += doctors[i].avgConsultationTime; // Add doctor's consultation time to total waiting time
+            patientQueue++; // Increment the patient queue position
+        }
+    }
+    
+    return totalWaitingTime; // Return the total waiting time
+}
+
+// Create an interface for reading input from the terminal
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask a question and return a promise with the answer
+function askQuestion(query) {
+    return new Promise(resolve => rl.question(query, resolve));
+}
+
+// Main function to run the program
+async function main() {
+    // Ask the user for the number of doctors
+    const numberOfDoctors = parseInt(await askQuestion("Enter the number of doctors: "));
+    
+    let doctors = []; // Initialize an empty array to store doctor objects
+    
+    // Loop to get the name and average consultation time for each doctor
+    for (let i = 0; i < numberOfDoctors; i++) {
+        const doctorName = await askQuestion(`Enter the name of doctor ${i + 1}: `);
+        const avgConsultationTime = parseFloat(await askQuestion(`Enter the average consultation time for Dr. ${doctorName} (in minutes): `));
+        doctors.push(new Doctor(doctorName, avgConsultationTime)); // Create a new doctor object and add it to the array
+    }
+    
+    // Ask the user for their position in the queue
+    const patientPosition = parseInt(await askQuestion("Enter your position in the queue: "));
+    
+    // Calculate the waiting time based on the doctors and patient position
+    const waitingTime = calculateWaitingTime(doctors, patientPosition);
+    
+    // Output the estimated waiting time
+    console.log(`You have to wait approximately ${waitingTime} minutes.`);
+    
+    rl.close(); // Close the readline interface
+}
+
+main(); // Run the main function

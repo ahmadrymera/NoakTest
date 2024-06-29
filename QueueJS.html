@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital Queue System</title>
+    <script>
+        // Define the Doctor class with a constructor that takes a name and average consultation time
+        class Doctor {
+            constructor(name, avgConsultationTime) {
+                this.name = name;
+                this.avgConsultationTime = avgConsultationTime;
+            }
+        }
+
+        // Function to calculate waiting time based on the list of doctors and patient's position in the queue
+        function calculateWaitingTime(doctors, patientPosition) {
+            // Sort doctors by their average consultation time in ascending order
+            doctors.sort((a, b) => a.avgConsultationTime - b.avgConsultationTime);
+            
+            let totalWaitingTime = 0; // Initialize total waiting time
+            let patientQueue = 0; // Initialize patient queue position
+            
+            // Allocate patients to doctors in a round-robin manner until the patient's position is reached
+            while (patientQueue < patientPosition) {
+                for (let i = 0; i < doctors.length && patientQueue < patientPosition; i++) {
+                    totalWaitingTime += doctors[i].avgConsultationTime; // Add doctor's consultation time to total waiting time
+                    patientQueue++; // Increment the patient queue position
+                }
+            }
+            
+            return totalWaitingTime; // Return the total waiting time
+        }
+
+        // Function to handle form submission and calculate waiting time
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            // Get the number of doctors from the input
+            const numberOfDoctors = parseInt(document.getElementById('numberOfDoctors').value);
+            
+            let doctors = []; // Initialize an empty array to store doctor objects
+            
+            // Loop to get the name and average consultation time for each doctor
+            for (let i = 0; i < numberOfDoctors; i++) {
+                const doctorName = document.getElementById(`doctorName${i}`).value;
+                const avgConsultationTime = parseFloat(document.getElementById(`avgConsultationTime${i}`).value);
+                doctors.push(new Doctor(doctorName, avgConsultationTime)); // Create a new doctor object and add it to the array
+            }
+            
+            // Get the patient's position in the queue from the input
+            const patientPosition = parseInt(document.getElementById('patientPosition').value);
+            
+            // Calculate the waiting time based on the doctors and patient position
+            const waitingTime = calculateWaitingTime(doctors, patientPosition);
+            
+            // Output the estimated waiting time
+            document.getElementById('result').textContent = `You have to wait approximately ${waitingTime} minutes.`;
+        }
+
+        // Function to dynamically generate input fields for doctors based on the number of doctors entered
+        function generateDoctorFields() {
+            const numberOfDoctors = parseInt(document.getElementById('numberOfDoctors').value);
+            const doctorsContainer = document.getElementById('doctorsContainer');
+            doctorsContainer.innerHTML = ''; // Clear any existing doctor fields
+
+            // Loop to create input fields for each doctor's name and average consultation time
+            for (let i = 0; i < numberOfDoctors; i++) {
+                const doctorNameInput = document.createElement('input');
+                doctorNameInput.type = 'text';
+                doctorNameInput.id = `doctorName${i}`;
+                doctorNameInput.placeholder = `Enter the name of doctor ${i + 1}`;
+                doctorsContainer.appendChild(doctorNameInput);
+
+                const avgConsultationTimeInput = document.createElement('input');
+                avgConsultationTimeInput.type = 'number';
+                avgConsultationTimeInput.id = `avgConsultationTime${i}`;
+                avgConsultationTimeInput.placeholder = `Enter the average consultation time for Dr. ${i + 1} (in minutes)`;
+                doctorsContainer.appendChild(avgConsultationTimeInput);
+
+                doctorsContainer.appendChild(document.createElement('br')); // Add a line break
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Clinic Queue System</h1>
+    <form onsubmit="handleFormSubmit(event)">
+        <label for="numberOfDoctors">Enter the number of doctors:</label>
+        <input type="number" id="numberOfDoctors" min="1" onchange="generateDoctorFields()" required><br><br>
+
+        <div id="doctorsContainer"></div><br>
+
+        <label for="patientPosition">Enter your position in the queue:</label>
+        <input type="number" id="patientPosition" min="1" required><br><br>
+
+        <input type="submit" value="Calculate Waiting Time">
+    </form>
+    <p id="result"></p>
+</body>
+</html>
